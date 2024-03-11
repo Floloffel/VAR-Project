@@ -4,9 +4,10 @@
 2. Always update the README file. We have to make a documentation anyway.
 3. Keep functions and loops as simple as possible.
 4. Only publish the "source material". Everything else like outputs and plots should not be uploaded. Use the .gitignore for this.
-5. longer variable names are better than shorter ones that are less clear.
+5. Longer variable names are better than shorter ones that are less clear.
 6. Update the requierements.txt when necessary. 
-7. lot of small comiits are better than one big commit
+7. Lot of small commits are better than one big commit.
+8. Always explain your code. For example small comment above every code section.
 
 _____________________________________
 
