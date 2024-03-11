@@ -1,0 +1,6 @@
+matplotlib
+scipy
+pyfar
+sounddevice
+soundfile
+numpy
