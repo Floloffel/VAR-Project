@@ -8,18 +8,18 @@
 6. Update the requierements.txt when necessary. 
 7. Lot of small commits are better than one big commit.
 8. Always explain your code. 
-    * Small comment above every code snippet. with 
-    <br> # very brief explanation
-    * give a brief explanation of the script at the very beginning of your code with 
-    <br>
-    ''' explanation '''
-    * when using .py instead of .ipynb seperate bigger code segments with
-    <br>
-    <br>
-    ############################################
-    <br>
-    \# segment title <br>
-    ############################################ <br>
+    * Small comment above every code snippet. with<br>
+    # very brief explanation
+    * give a brief explanation of the script at the very beginning of your code with<br>
+    '''<br>
+    explanation<br>
+    '''
+    * when using .py instead of .ipynb seperate bigger code segments with<br>
+    ############################################<br>
+    \# segment title<br>
+    ############################################<br>
+
+9. If your code gets very long (>>150 lines), split into different files. You can import files like regular python modules and use its functions.
 
 
 _____________________________________
