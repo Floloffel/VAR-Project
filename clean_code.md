@@ -9,7 +9,7 @@
 7. Lot of small commits are better than one big commit.
 8. Always explain your code. 
     * Small comment above every code snippet. with<br>
-    # very brief explanation
+    \# very brief explanation
     * give a brief explanation of the script at the very beginning of your code with<br>
     '''<br>
     explanation<br>
