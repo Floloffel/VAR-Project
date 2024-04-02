@@ -7,7 +7,20 @@
 5. Longer variable names are better than shorter ones that are less clear.
 6. Update the requierements.txt when necessary. 
 7. Lot of small commits are better than one big commit.
-8. Always explain your code. For example small comment above every code section.
+8. Always explain your code. 
+    * Small comment above every code snippet. with 
+    <br> # very brief explanation
+    * give a brief explanation of the script at the very beginning of your code with 
+    <br>
+    ''' explanation '''
+    * when using .py instead of .ipynb seperate bigger code segments with
+    <br>
+    <br>
+    ############################################
+    <br>
+    \# segment title <br>
+    ############################################ <br>
+
 
 _____________________________________
 
