@@ -7,6 +7,7 @@ Module inputs:
 - radius as 1D array
 - start in milliseconds
 - stop in milliseconds
+- sample rate in Hz
 
 Module contains subfunctions, which are all used in TH_TS_wrapper.
 
@@ -28,10 +29,7 @@ date:
 '''
 
 
-
 import numpy as np
-import spaudiopy as spa
-
 
 
 def y_top(x, x_offset): 
