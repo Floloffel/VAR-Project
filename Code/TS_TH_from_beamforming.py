@@ -3,7 +3,8 @@ Script contains functions to calculcate Top Side and Top Horizontal from an Ambi
 
 Module inputs:
 - data: Ambisonics signal in ACN channel ordering as np.ndarray
-- Ambisonics order for calculation of TS and TH, N >= N of the Ambisonics signal
+- N: Ambisonics order for calculation of TS and TH, N >= N of the Ambisonics signal
+- pattern: Beamforming pattern, max_re, cardioid, hypercardioid
 - start in milliseconds
 - stop in milliseconds
 - sample rate in Hz
@@ -25,10 +26,8 @@ import numpy as np
 import spaudiopy as spa
 
 
-def energy_from_beamforming(data: np.ndarray, start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
+def energy_from_beamforming(data: np.ndarray, N=3, pattern="hypercardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
     # data: Ambisonics signal in ACN channel ordering
-
-    N=2
 
     # extracting relevant channels from signal
     x_nm = data[0:(N+1)**2,:]
@@ -46,7 +45,7 @@ def energy_from_beamforming(data: np.ndarray, start_milliseconds=15, stop_millis
     dirs = spa.utils.vec2dir(vec)
 
     # getting beformer weights
-    w_nm = spa.parsa.sh_beamformer_from_pattern('max_rE', N,
+    w_nm = spa.parsa.sh_beamformer_from_pattern(pattern, N,
                                           dirs[:,0], dirs[:,1]) #azi, zen
     
     # beamforming
