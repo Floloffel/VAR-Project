@@ -1,6 +1,6 @@
 '''
 Script contains function to plot cube edges on a sphere. 
-Plotted will be in 2D Plane with Azimuth [-1 to 1] and Elevation [0 to 1]
+Plotted will be in 2D Plane with Azimuth [-1 to 1] and Elevation [-0.5 to 0.5]
 
 Script can be imported or executed as stand alone.
 
@@ -12,7 +12,7 @@ author:
 f.ulbricht@campus.tu-berlin.de
 
 date: 
-27.05.2024
+03.06.2024
 '''
 
 
@@ -52,11 +52,11 @@ if __name__ == "__main__":
     plt.figure()
     plot_square_to_cube()
     plt.axvline(0)
-    plt.axhline(0.5)
+    plt.axhline(0)
     plt.xlim(-1, 1)
-    plt.ylim(0, 1)
+    plt.ylim(-0.5, 0.5)
     plt.title("Cube edges interpolated on sphere")
     plt.xlabel("Azimuth in rad")
-    plt.ylabel("Zenith in rad")
+    plt.ylabel("Elevation in rad")
     plt.show()
 
