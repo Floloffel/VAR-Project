@@ -34,7 +34,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
     match method:
         case "beamforming":
             # calc energy/direction with Beamforming
-            energy = energy_from_beamforming(HOAS.get_signals(), start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
+            energy = energy_from_beamforming(ambi_signal, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
             # calc parameters
             TH, TS = calc_TS_TH(energy)
 
