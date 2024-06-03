@@ -26,7 +26,7 @@ def calc_TS_TH_decoder(ls_sig, tl, tu):
 
 def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
     # get list of paths 
-    HOAS_paths = glob.glob(path + "/*.wav")
+    HOAS_paths = sorted(glob.glob(path + "/*.wav"))
     # load HOAs from paths
     HOAS = spa.io.load_audio(HOAS_paths)
 
