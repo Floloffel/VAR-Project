@@ -1,9 +1,9 @@
 '''
-Script contains functions to calculcate Top Side and Top Horizontal from Azimuth, Zenith and Radius in a given time window.
+Script contains functions to calculcate Top Side and Top Horizontal from Azimuth, Elevation and Radius in a given time window.
 
 Module inputs:
 - azimuth as 1D array
-- zenith as 1D array
+- elevation as 1D array
 - radius as 1D array
 - start in milliseconds
 - stop in milliseconds
@@ -33,7 +33,7 @@ import numpy as np
 
 
 def y_top(x, x_offset): 
-    y_0_top = 0.6959132760153038  
+    y_0_top = 0.19591327601530384
     amplitude = 0.05408672398469633
     y_top = amplitude * np.sin((x-x_offset) * 2 * np.pi) + y_0_top
 
@@ -42,7 +42,7 @@ def y_top(x, x_offset):
 
 
 def y_bottom(x, x_offset):
-    y_0_bottom = 0.3040867239846963
+    y_0_bottom = -0.19591327601530367
     amplitude = 0.05408672398469633
     y_bottom = -amplitude * np.sin((x-x_offset) * 2 * np.pi) + y_0_bottom
 
@@ -50,7 +50,7 @@ def y_bottom(x, x_offset):
 
 
 
-def sector_classfier(azi, zen):
+def sector_classfier(azi, elev):
     vertical_rigth_back = 0.75
     vertical_front_right = 0.25
     vertical_back_left = -0.75
@@ -64,11 +64,11 @@ def sector_classfier(azi, zen):
         x_offset = -1.25
 
         # check top
-        if zen > y_top(azi, x_offset):
+        if elev > y_top(azi, x_offset):
             label = 0
 
         # check bottom
-        elif zen < y_bottom(azi, x_offset):
+        elif elev < y_bottom(azi, x_offset):
             label = 5
 
         else:
@@ -80,11 +80,11 @@ def sector_classfier(azi, zen):
         x_offset = -0.75
 
         # check top
-        if zen > y_top(azi, x_offset):
+        if elev > y_top(azi, x_offset):
             label = 0
 
         # check bottom
-        elif zen < y_bottom(azi, x_offset):
+        elif elev < y_bottom(azi, x_offset):
             label = 5
 
         else:
@@ -96,11 +96,11 @@ def sector_classfier(azi, zen):
         x_offset = -0.25
 
         # check top
-        if zen > y_top(azi, x_offset):
+        if elev > y_top(azi, x_offset):
             label = 0
 
         # check bottom
-        elif zen < y_bottom(azi, x_offset):
+        elif elev < y_bottom(azi, x_offset):
             label = 5
 
         else:
@@ -112,11 +112,11 @@ def sector_classfier(azi, zen):
         x_offset = 0.25
 
         # check top
-        if zen > y_top(azi, x_offset):
+        if elev > y_top(azi, x_offset):
             label = 0
 
         # check bottom
-        elif zen < y_bottom(azi, x_offset):
+        elif elev < y_bottom(azi, x_offset):
             label = 5
 
         else:
@@ -128,11 +128,11 @@ def sector_classfier(azi, zen):
         x_offset = 0.75
 
         # check top
-        if zen > y_top(azi, x_offset):
+        if elev > y_top(azi, x_offset):
             label = 0
 
         # check bottom
-        elif zen < y_bottom(azi, x_offset):
+        elif elev < y_bottom(azi, x_offset):
             label = 5
 
         else:
@@ -166,12 +166,12 @@ def label2sectorname(label):
 
 
 
-def add_sector2arrays(azimuth: np.ndarray, zenith: np.ndarray, radius: np.ndarray):
+def add_sector2arrays(azimuth: np.ndarray, elevation: np.ndarray, radius: np.ndarray):
     
     data = np.empty((azimuth.shape[0], 4))
-    for i, (azi_i, zen_i, r_i) in enumerate(zip(azimuth, zenith, radius)):
-        label_i = sector_classfier(azi_i, zen_i)
-        sample_data = np.array([azi_i, zen_i, r_i, label_i])
+    for i, (azi_i, elev_i, r_i) in enumerate(zip(azimuth, elevation, radius)):
+        label_i = sector_classfier(azi_i, elev_i)
+        sample_data = np.array([azi_i, elev_i, r_i, label_i])
         data[i,:] = sample_data
         
     return data
@@ -179,7 +179,7 @@ def add_sector2arrays(azimuth: np.ndarray, zenith: np.ndarray, radius: np.ndarra
 
 
 def energy_per_sector(data: np.ndarray, start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
-    # data dimensions: azimuth, zeith, radius, label
+    # data dimensions: azimuth, elevation, radius, label
 
     start_sample = int(start_milliseconds / 1000 * samplerate)
     stop_sample = int(stop_milliseconds /1000 * samplerate)
@@ -217,8 +217,8 @@ def calc_TS_TH(energy):
     return TS, TH
 
 
-def TH_TS_wrapper(azimuth: np.ndarray, zenith: np.ndarray, radius: np.ndarray, start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
-    data = add_sector2arrays(azimuth, zenith, radius)
+def TH_TS_wrapper(azimuth: np.ndarray, elevation: np.ndarray, radius: np.ndarray, start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
+    data = add_sector2arrays(azimuth, elevation, radius)
     energy = energy_per_sector(data, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
     TH, TS = calc_TS_TH(energy)
 
