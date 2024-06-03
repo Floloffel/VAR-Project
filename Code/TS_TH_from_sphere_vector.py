@@ -211,8 +211,8 @@ def energy_per_sector(data: np.ndarray, start_milliseconds=15, stop_milliseconds
 
 
 def calc_TS_TH(energy):
-    TS = 20 * np.log10(energy[0] / (energy[2] + energy[3]))
-    TH = 20 * np.log10(energy[0] / (energy[2] + energy[3] + energy[4]))
+    TS = 10 * np.log10((energy[0] / (energy[2] + energy[3]))**2)
+    TH = 10 * np.log10((energy[0] / (energy[2] + energy[3] + energy[4]))**2)
 
     return TS, TH
 
