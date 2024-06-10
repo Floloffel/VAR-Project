@@ -1,5 +1,5 @@
 '''
-Script contains functions to calculcate Top Side and Top Horizontal from an Ambisonics signal.
+Script contains functions to calculcate Top Side and Top Horizontal from an Ambisonics signal with Beamforming.
 
 Module inputs:
 - data: Ambisonics signal in ACN channel ordering as np.ndarray
@@ -15,7 +15,7 @@ energy_from_beamforming: calcs energy/direction of an Ambisonics signal with Bea
 
 
 author:
-
+avijah.sofie.neumann@campus.tu-berlin.de
 
 date: 
 03.06.2024
@@ -24,9 +24,10 @@ date:
 
 import numpy as np
 import spaudiopy as spa
+import matplotlib.pyplot as plt
+from matplotlib import cm, colors
 
-
-def energy_from_beamforming(data: np.ndarray, N=3, pattern="hypercardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
+def energy_from_beamforming(data: np.ndarray, N=3, pattern="cardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
     # data: Ambisonics signal in ACN channel ordering
 
     # extracting relevant channels from signal
@@ -62,3 +63,59 @@ def energy_from_beamforming(data: np.ndarray, N=3, pattern="hypercardioid", star
     energy = np.array([top_energy, front_energy, left_energy, right_energy, back_energy, bottom_energy])
     
     return energy
+
+def plot_filter(F_nm, sh_type=None, azi_steps=5, el_steps=3, title=None,
+              ax=None):
+    # based on spaudiopy plot.sh_coeffs definition
+
+    F_nm = spa.utils.asarray_1d(F_nm)
+    F_nm = F_nm[:, np.newaxis]
+
+    sh_type = 'complex' if np.iscomplexobj(F_nm) else 'real'
+
+    theta_plot, phi_plot = np.meshgrid(np.linspace(0., 2 * np.pi,
+                                        int(360 / azi_steps)),
+                            np.linspace(10e-8, np.pi - 10e-8,
+                                        int(180 / el_steps)))
+
+    # inverse spherical harmonics transform to get the absolute value
+    f_plot = spa.sph.inverse_sht(F_nm, theta_plot.ravel(), phi_plot.ravel(),
+                    sh_type)
+    f_r = np.abs(f_plot)
+
+    if ax is None:
+        fig = plt.figure(constrained_layout=True)
+        ax = fig.add_subplot(projection='3d')
+    else:
+        fig = ax.get_figure()
+
+    # define colormap
+    m = cm.ScalarMappable(cmap=cm.jet,
+                norm=colors.Normalize(vmin=0, vmax=1))
+    m.set_array(f_r)
+    c = m.to_rgba(f_r.reshape(theta_plot.shape))
+
+    # surface plot
+    ax.plot_surface(spa.utils.rad2deg(theta_plot), spa.utils.rad2deg(phi_plot),
+        f_r.reshape(theta_plot.shape),
+        facecolors=c,
+        shade=False, linewidth=0.05, antialiased=True)
+    
+    ax.set_xlim(0,360)
+    ax.set_ylim(0,180)
+    ax.set_zlim(-0,1)
+
+    ax.set_xticks([0,90,180,270,360])
+    ax.set_yticks([0,90,180])
+    ax.set_zticks([0,0.5,1])
+
+    ax.set_xlabel(r'$\theta$' + r' (°)')
+    ax.set_ylabel(r'$\phi$' + r' (°)') 
+    ax.set_zlabel('S')
+
+    ax.view_init(30, 60) # angle to show
+    
+    if title is not None:
+        ax.set_title(title)
+
+    plt.grid(True)
