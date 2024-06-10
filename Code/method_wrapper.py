@@ -39,11 +39,11 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             TH, TS = calc_TS_TH(energy)
 
         case "pseudo_intensity":
-            # insert ppseudo intensity function here
-            azimuth = 0
-            zenith = 0
-            radius = 0
-            
+            # insert pseudo intensity function here
+
+            B_format = spa.sig.AmbiBSignal.sh_to_b(spa.sig.MultiSignal(HOAS.get_signals()[0:4].tolist(), fs = 44100))
+            azimuth, zenith, radius = spa.parsa.pseudo_intensity(B_format, win_len = 3, f_bp = (63, 8000))
+
             TH, TS = TH_TS_wrapper(azimuth, zenith, radius, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
         
         case "allrad_decoder":
@@ -73,8 +73,26 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             # calc paramter from directionak energies
             TH, TS = calc_TS_TH_decoder(ls_sig, start_milliseconds, stop_milliseconds)
         
+        case "reference":
+            # insert reference
+            weights = np.array(([500,-1,-1,720.1,-3.1,1.3,-1.3,-1.3,617.1],[503,0,723.1,0,-532.8,0,0,0,-311.2],[503,0,-723.1,0,-532.8,0,0,0,-311.2],[503,723.1,0,0,535.9,0,0,0,-305.8]))
+            start_sample = int(start_milliseconds / 1000 * samplerate)
+            stop_sample = int(stop_milliseconds /1000 * samplerate)
+            ambi_3 = HOAS.get_signals()
+            ambi_2 = ambi_3[[0,1,2,3,4,5,6,7,8]]
+            ambi_2_sect = ambi_2[:,start_sample:stop_sample]
+            ambi_2_sum = np.zeros(9)
+            for i in range(9):
+                ambi_2_sum[i] = np.sum(ambi_2_sect[i,:])
+            tlbr_weights = ambi_2_sum * weights
+            tlbr = np.zeros(4)
+            for i in range(4):
+                tlbr[i] = np.sum(tlbr_weights[i,:])
+            TS = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[3])**2)
+            TH = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[2] + tlbr[3])**2)
+        
         case _:
-            methods = ["beamforming", "pseudo_intensity", "allrad_decoder", "allrad2_decoder", "mad_decoder"]
+            methods = ["beamforming", "pseudo_intensity", "allrad_decoder", "allrad2_decoder", "mad_decoder", "reference"]
             print("Unknown method. Methods are:")
             for m in methods:
                print(m)
