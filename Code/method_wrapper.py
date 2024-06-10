@@ -1,4 +1,3 @@
-import pandas  as pd
 import spaudiopy as spa
 import numpy as np
 import glob

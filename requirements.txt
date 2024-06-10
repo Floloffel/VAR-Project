@@ -1,9 +1,6 @@
 matplotlib
-scipy
-pyfar
-sounddevice
-soundfile
 numpy
 spaudiopy
 ipykernel
+pandas
 openpyxl
