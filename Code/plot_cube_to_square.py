@@ -58,5 +58,6 @@ if __name__ == "__main__":
     plt.title("Cube edges interpolated on sphere")
     plt.xlabel("Azimuth in rad")
     plt.ylabel("Elevation in rad")
+    plt.savefig("out/plot_cube_to_sphere.png")
     plt.show()
 
