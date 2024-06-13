@@ -1,4 +1,18 @@
-import pandas  as pd
+'''
+Script contains functions to calculate TS and TH with different methods.
+functions are: 
+calc_TS_TH_decoder (used in method wrapper)
+method_wrapper
+
+Inputs are:
+- method as string
+- path to raw data (raw data structure is /folders/HOA/*.wav)
+- Evaluation window start in milliseconds
+- evalution window stop in milliseconds
+- sample rate of raw data
+'''
+
+
 import spaudiopy as spa
 import numpy as np
 import glob
@@ -43,8 +57,8 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
 
             B_format = spa.sig.AmbiBSignal.sh_to_b(spa.sig.MultiSignal(HOAS.get_signals()[0:4].tolist(), fs = 44100))
             azimuth, zenith, radius = spa.parsa.pseudo_intensity(B_format, win_len = 3, f_bp = (63, 8000))
-
-            TH, TS = TH_TS_wrapper(azimuth, zenith, radius, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
+            elevation = zenith - (np.pi / 2)
+            TH, TS = TH_TS_wrapper(azimuth, elevation, radius, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
         
         case "allrad_decoder":
             # definition of speaker set up
@@ -100,15 +114,6 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             TS, TH = None, None
         
     return TS, TH
-    
-
-
-        
-
-#def save_result():
-
-#TS, TH = method_wrapper("allrad_decoder", "Raw Data/Applied Acoustics/Applied Acoustics/A10p/HOA")
-#print(TS, TH)
 
  
 

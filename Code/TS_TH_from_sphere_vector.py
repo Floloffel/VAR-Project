@@ -51,6 +51,14 @@ def y_bottom(x, x_offset):
 
 
 def sector_classfier(azi, elev):
+
+    # convert to rad
+    azi = azi / np.pi
+    elev = elev / np.pi
+
+    # convert zenith to elevation
+    #elev = elev -0.5
+    
     vertical_rigth_back = 0.75
     vertical_front_right = 0.25
     vertical_back_left = -0.75
@@ -222,7 +230,7 @@ def TH_TS_wrapper(azimuth: np.ndarray, elevation: np.ndarray, radius: np.ndarray
     energy = energy_per_sector(data, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
     TH, TS = calc_TS_TH(energy)
 
-    print("Top Horizontal:", TH)
-    print("Top / Side:", TS)
+    #print("Top Horizontal:", TH)
+    #print("Top / Side:", TS)
 
     return TH, TS
