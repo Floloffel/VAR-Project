@@ -93,7 +93,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             start_sample = int(start_milliseconds / 1000 * samplerate)
             stop_sample = int(stop_milliseconds /1000 * samplerate)
             ambi_3 = HOAS.get_signals()
-            ambi_2 = ambi_3[[0,1,2,3,4,5,6,7,8]]
+            ambi_2 = ambi_3[[0,3,1,2,6,7,5,8,4]]
             ambi_2_sect = ambi_2[:,start_sample:stop_sample]
             ambi_2_sum = np.zeros(9)
             for i in range(9):
@@ -102,7 +102,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             tlbr = np.zeros(4)
             for i in range(4):
                 tlbr[i] = np.sum(tlbr_weights[i,:])
-            TS = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[3])**2)
+            TS = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[2])**2)
             TH = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[2] + tlbr[3])**2)
         
         case _:
