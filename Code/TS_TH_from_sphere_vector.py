@@ -218,17 +218,17 @@ def energy_per_sector(data: np.ndarray, start_milliseconds=15, stop_milliseconds
 
 
 
-def calc_TS_TH(energy):
-    TS = 10 * np.log10((energy[0] / (energy[2] + energy[3]))**2)
+def calc_TH_TS(energy):
     TH = 10 * np.log10((energy[0] / (energy[2] + energy[3] + energy[4]))**2)
+    TS = 10 * np.log10((energy[0] / (energy[2] + energy[3]))**2)
 
-    return TS, TH
+    return TH, TS
 
 
 def TH_TS_wrapper(azimuth: np.ndarray, elevation: np.ndarray, radius: np.ndarray, start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
     data = add_sector2arrays(azimuth, elevation, radius)
     energy = energy_per_sector(data, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
-    TH, TS = calc_TS_TH(energy)
+    TH, TS = calc_TH_TS(energy)
 
     #print("Top Horizontal:", TH)
     #print("Top / Side:", TS)
