@@ -27,7 +27,7 @@ import spaudiopy as spa
 import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 
-def energy_from_beamforming(data: np.ndarray, N=3, pattern="cardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
+def energy_from_beamforming(data: np.ndarray, N=2, pattern="hypercardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
     # data: Ambisonics signal in ACN channel ordering
 
     # extracting relevant channels from signal
