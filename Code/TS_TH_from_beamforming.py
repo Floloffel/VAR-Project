@@ -8,11 +8,11 @@ Module inputs:
 - start in milliseconds
 - stop in milliseconds
 - sample rate in Hz
-
+- Fnm: ndarray with Ambisonics Filter function
 
 Functions:
 energy_from_beamforming: calcs energy/direction of an Ambisonics signal with Beamforming
-
+plot_filter: plots spherical filters in 3d plot, based on spaudiopy plot.sh_coeffs definition
 
 author:
 avijah.sofie.neumann@campus.tu-berlin.de
