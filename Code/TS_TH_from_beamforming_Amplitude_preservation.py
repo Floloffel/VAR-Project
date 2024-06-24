@@ -46,7 +46,7 @@ def energy_from_beamforming(data: np.ndarray, N=2, pattern="hypercardioid", star
     w_nm = spa.parsa.sh_beamformer_from_pattern(pattern, N,
                                           dirs[0,:], dirs[1,:]) #azi, zen
     
-    # amplitude preservation
+    # amplitude preservation after C. Hold, A. Politis, L. McCormack and V. Pulkki, "Spatial Filter Bank Design in the Spherical Harmonic Domain," 2021 29th European Signal Processing Conference (EUSIPCO), Dublin, Ireland, 2021, pp. 106-110, doi: 10.23919/EUSIPCO54536.2021.9616091.
     # load T-design for N+1
     sec_vecs = spa.grids.load_t_design(N+1)
 

@@ -18,7 +18,7 @@ import numpy as np
 import glob
 from TS_TH_from_sphere_vector import TH_TS_wrapper
 from TS_TH_from_sphere_vector import calc_TH_TS
-from TS_TH_from_beamforming import energy_from_beamforming
+from TS_TH_from_beamforming_Amplitude_preservation import energy_from_beamforming
 
 
 def calc_TH_TS_decoder(ls_sig, tl, tu):
