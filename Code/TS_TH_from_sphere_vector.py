@@ -204,12 +204,12 @@ def energy_per_sector(data: np.ndarray, start_milliseconds=15, stop_milliseconds
     bottom_idx = np.where(data[:,3] == 5)[0]
 
     # sum energys per label
-    top_energy = np.sum(data[[top_idx], 2])
-    front_energy = np.sum(data[[front_idx], 2])
-    left_energy = np.sum(data[[left_idx], 2])
-    right_energy = np.sum(data[[right_idx], 2])
-    back_energy = np.sum(data[[back_idx], 2])
-    bottom_energy = np.sum(data[[bottom_idx], 2])
+    top_energy = np.sum(np.abs(data[[top_idx], 2]))
+    front_energy = np.sum(np.abs(data[[front_idx], 2]))
+    left_energy = np.sum(np.abs(data[[left_idx], 2]))
+    right_energy = np.sum(np.abs(data[[right_idx], 2]))
+    back_energy = np.sum(np.abs(data[[back_idx], 2]))
+    bottom_energy = np.sum(np.abs(data[[bottom_idx], 2]))
 
     energy = np.array([top_energy, front_energy, left_energy, right_energy, back_energy, bottom_energy])
     
@@ -219,8 +219,8 @@ def energy_per_sector(data: np.ndarray, start_milliseconds=15, stop_milliseconds
 
 
 def calc_TS_TH(energy):
-    TS = 10 * np.log10((energy[0] / (energy[2] + energy[3]))**2)
-    TH = 10 * np.log10((energy[0] / (energy[2] + energy[3] + energy[4]))**2)
+    TS = 10 * np.log10((energy[0]**2) / ((energy[2] + energy[3])**2))
+    TH = 10 * np.log10((energy[0]**2) / ((energy[2] + energy[3] + energy[4])**2))
 
     return TS, TH
 

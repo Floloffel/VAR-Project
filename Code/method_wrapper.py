@@ -48,16 +48,20 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
     match method:
         case "beamforming":
             # calc energy/direction with Beamforming
-            energy = energy_from_beamforming(HOAS.get_signals(), start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
+            energy = energy_from_beamforming(HOAS.get_signals() , start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
             # calc parameters
             TH, TS = calc_TS_TH(energy)
 
         case "pseudo_intensity":
-            # insert pseudo intensity function here
-
-            B_format = spa.sig.AmbiBSignal.sh_to_b(spa.sig.MultiSignal(HOAS.get_signals()[0:4].tolist(), fs = 44100))
+            # pseudo intensity calculation method
+            # rearrange ambisonics channel order
+            FuMa = HOAS.get_signals()[0:4].tolist()
+            ACN = (FuMa[0],FuMa[3],FuMa[1],FuMa[2])
+            B_format = spa.sig.AmbiBSignal.sh_to_b(spa.sig.MultiSignal(ACN, fs = 44100))
+            # calculate pseudo intensity
             azimuth, zenith, radius = spa.parsa.pseudo_intensity(B_format, win_len = 3, f_bp = (63, 8000))
             elevation = zenith - (np.pi / 2)
+            # calculate TH and TS from intensity-vectors
             TH, TS = TH_TS_wrapper(azimuth, elevation, radius, start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
         
         case "allrad_decoder":
@@ -75,7 +79,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             ls_setup.ambisonics_setup()
             # decoder signal
             ls_sig = spa.decoder.allrad2(HOAS.get_signals(), ls_setup, 3)
-            # calc paramter from directionak energies
+            # calc paramter from directional energies
             TH, TS = calc_TS_TH_decoder(ls_sig, start_milliseconds, stop_milliseconds)
         
         case "mad_decoder":
@@ -84,26 +88,32 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             ls_setup.ambisonics_setup()
             # decoder signal
             ls_sig = spa.decoder.mad(HOAS.get_signals(), ls_setup, 3)
-            # calc paramter from directionak energies
+            # calc paramter from directional energies
             TH, TS = calc_TS_TH_decoder(ls_sig, start_milliseconds, stop_milliseconds)
         
         case "reference":
-            # insert reference
+            # reference calculation method
+            # define weights from (Panton 2019)
             weights = np.array(([500,-1,-1,720.1,-3.1,1.3,-1.3,-1.3,617.1],[503,0,723.1,0,-532.8,0,0,0,-311.2],[503,0,-723.1,0,-532.8,0,0,0,-311.2],[503,723.1,0,0,535.9,0,0,0,-305.8]))
             start_sample = int(start_milliseconds / 1000 * samplerate)
             stop_sample = int(stop_milliseconds /1000 * samplerate)
+            # rearrange ambisonics channel order
             ambi_3 = HOAS.get_signals()
             ambi_2 = ambi_3[[0,3,1,2,6,7,5,8,4]]
+            # cut ambisonics signals to evaluation length
             ambi_2_sect = ambi_2[:,start_sample:stop_sample]
+            # sum each ambisonic signal
             ambi_2_sum = np.zeros(9)
             for i in range(9):
                 ambi_2_sum[i] = np.sum(ambi_2_sect[i,:])
+            # apply weighting to the summed ambisonics signals
             tlbr_weights = ambi_2_sum * weights
             tlbr = np.zeros(4)
             for i in range(4):
                 tlbr[i] = np.sum(tlbr_weights[i,:])
-            TS = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[2])**2)
-            TH = 10*np.log10((tlbr[0])**2/(tlbr[1] + tlbr[2] + tlbr[3])**2)
+            # calc paramter from directional energies
+            TS = 10*np.log10(((tlbr[0])**2)/((tlbr[1] + tlbr[2])**2))
+            TH = 10*np.log10(((tlbr[0])**2)/((tlbr[1] + tlbr[2] + tlbr[3])**2))
         
         case _:
             methods = ["beamforming", "pseudo_intensity", "allrad_decoder", "allrad2_decoder", "mad_decoder", "reference"]
