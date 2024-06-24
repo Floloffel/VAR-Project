@@ -53,7 +53,7 @@ def energy_from_beamforming(data: np.ndarray, N=2, pattern="hypercardioid", star
     # beamforming
     y = spa.parsa.sh_beamform(w_nm, x_nm)
 
-    # sum energys per direction
+    # extract energys per direction
     top_energy = y[0,:]
     front_energy = y[1,:]
     left_energy = y[2,:]
