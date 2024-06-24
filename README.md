@@ -16,16 +16,16 @@ avijah.sofie.neumann@campus.tu-berlin.de
 linus.staubach@campus.tu-berlin.de
 f.ulbricht@campus.tu-berlin.de
 
-# How to install environment
+# How to install the environment
 
 * create python environment (tested on python 3.11)
-* activate new environemnt
+* activate new environment
     * via terminal (open with str + ö) and conda: conda activate environemnt_name
-    * check active environemnt via terminal with: conda info --env
+    * check active environment via terminal with: conda info --env
 * install python modules
     * via terminal: pip install -r .\requirements.txt
-        * tipp: use TAB for auto complete path to double check
-    * rerun command to check if modules were installed succesfully
+        * tip: use TAB for auto-complete path to double check
+    * rerun command to check if modules were installed successfully
     * run pip command every time requirements.txt is updated
 
 
@@ -33,13 +33,16 @@ f.ulbricht@campus.tu-berlin.de
 
 * method_comparison.ipynb 
     * repository's main feature
-    * compares Top Side / Top Horizontal paramters from different approaches
+    * compares Top Side / Top Horizontal parameters from different approaches
     * outputs plots and results in /out folder
 * decoder_comparison.ipynb
     * compares ambisonic decoder from spaudiopy module
 * plot_cube_to_sphere.py
     * run with Terminal prompt: "python .\Code\plot_cube_to_square.py"
-    * plots and saves cube edges on sphere (as azimuth / elevation)
+    * plots and saves cube edges on the sphere (as azimuth / elevation)
+ * method_test.ipynb
+    * use simulated static signals from different cube directions and their combinations  
+    * compares Top Side / Top Horizontal parameters from different approaches 
 
 
 Date: 20.06.2024
