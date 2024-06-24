@@ -50,7 +50,8 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             # calc energy/direction with Beamforming
             energy = energy_from_beamforming(HOAS.get_signals() , start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
             # calc parameters
-            TH, TS = calc_TH_TS(energy)
+            TH = 10 * np.log10((np.sum(energy[0]**2) / np.sum((energy[2] + energy[3] + energy[4])**2)))
+            TS = 10 * np.log10((np.sum(energy[0]**2) / np.sum((energy[2] + energy[3])**2)))
 
         case "pseudo_intensity":
             # pseudo intensity calculation method
@@ -93,27 +94,20 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
         
         case "reference":
             # reference calculation method
-            # define weights from (Panton 2019)
+            # define weights from (Panton, 2019)
             weights = np.array(([500,-1,-1,720.1,-3.1,1.3,-1.3,-1.3,617.1],[503,0,723.1,0,-532.8,0,0,0,-311.2],[503,0,-723.1,0,-532.8,0,0,0,-311.2],[503,723.1,0,0,535.9,0,0,0,-305.8]))
             start_sample = int(start_milliseconds / 1000 * samplerate)
             stop_sample = int(stop_milliseconds /1000 * samplerate)
-            # rearrange ambisonics channel order
+            # rearrange ambisonics channel order from ACN to FuMa
             ambi_3 = HOAS.get_signals()
             ambi_2 = ambi_3[[0,3,1,2,6,7,5,8,4]]
             # cut ambisonics signals to evaluation length
             ambi_2_sect = ambi_2[:,start_sample:stop_sample]
-            # sum each ambisonic signal
-            ambi_2_sum = np.zeros(9)
-            for i in range(9):
-                ambi_2_sum[i] = np.sum(ambi_2_sect[i,:])
-            # apply weighting to the summed ambisonics signals
-            tlbr_weights = ambi_2_sum * weights
-            tlbr = np.zeros(4)
-            for i in range(4):
-                tlbr[i] = np.sum(tlbr_weights[i,:])
+            # apply weights to ambisonics signal
+            tlbr = weights @ ambi_2_sect
             # calc paramter from directional energies
-            TS = 10*np.log10(((tlbr[0])**2)/((tlbr[1] + tlbr[2])**2))
-            TH = 10*np.log10(((tlbr[0])**2)/((tlbr[1] + tlbr[2] + tlbr[3])**2))
+            TS = 10*np.log10(np.sum((tlbr[0])**2)/np.sum((tlbr[1] + tlbr[2])**2))
+            TH = 10*np.log10(np.sum((tlbr[0])**2)/np.sum((tlbr[1] + tlbr[2] + tlbr[3])**2))
         
         case _:
             methods = ["beamforming", "pseudo_intensity", "allrad_decoder", "allrad2_decoder", "mad_decoder", "reference"]
