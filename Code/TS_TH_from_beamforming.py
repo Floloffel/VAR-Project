@@ -8,11 +8,11 @@ Module inputs:
 - start in milliseconds
 - stop in milliseconds
 - sample rate in Hz
-
+- Fnm: ndarray with Ambisonics Filter function
 
 Functions:
 energy_from_beamforming: calcs energy/direction of an Ambisonics signal with Beamforming
-
+plot_filter: plots spherical filters in 3d plot, based on spaudiopy plot.sh_coeffs definition
 
 author:
 avijah.sofie.neumann@campus.tu-berlin.de
@@ -27,7 +27,7 @@ import spaudiopy as spa
 import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 
-def energy_from_beamforming(data: np.ndarray, N=3, pattern="cardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
+def energy_from_beamforming(data: np.ndarray, N=2, pattern="hypercardioid", start_milliseconds=15, stop_milliseconds=100, samplerate=44100):
     # data: Ambisonics signal in ACN channel ordering
 
     # extracting relevant channels from signal

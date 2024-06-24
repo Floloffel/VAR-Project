@@ -17,11 +17,11 @@ import spaudiopy as spa
 import numpy as np
 import glob
 from TS_TH_from_sphere_vector import TH_TS_wrapper
-from TS_TH_from_sphere_vector import calc_TS_TH
+from TS_TH_from_sphere_vector import calc_TH_TS
 from TS_TH_from_beamforming import energy_from_beamforming
 
 
-def calc_TS_TH_decoder(ls_sig, tl, tu):
+def calc_TH_TS_decoder(ls_sig, tl, tu):
     # Berechnung der Richtungsenergien
     #front = sum(ls_sig[0, tl:tu])
     back = sum(ls_sig[5, tl:tu])
@@ -50,7 +50,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             # calc energy/direction with Beamforming
             energy = energy_from_beamforming(HOAS.get_signals() , start_milliseconds=start_milliseconds, stop_milliseconds=stop_milliseconds, samplerate=samplerate)
             # calc parameters
-            TH, TS = calc_TS_TH(energy)
+            TH, TS = calc_TH_TS(energy)
 
         case "pseudo_intensity":
             # pseudo intensity calculation method
@@ -71,7 +71,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             # decoder signal
             ls_sig = spa.decoder.allrad(HOAS.get_signals(), ls_setup, 3)
             # calc paramter from directional energies
-            TH, TS = calc_TS_TH_decoder(ls_sig, start_milliseconds, stop_milliseconds)
+            TH, TS = calc_TH_TS_decoder(ls_sig, start_milliseconds, stop_milliseconds)
         
         case "allrad2_decoder":
             # definition of speaker set up
@@ -79,8 +79,8 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             ls_setup.ambisonics_setup()
             # decoder signal
             ls_sig = spa.decoder.allrad2(HOAS.get_signals(), ls_setup, 3)
-            # calc paramter from directional energies
-            TH, TS = calc_TS_TH_decoder(ls_sig, start_milliseconds, stop_milliseconds)
+            # calc paramter from directionak energies
+            TH, TS = calc_TH_TS_decoder(ls_sig, start_milliseconds, stop_milliseconds)
         
         case "mad_decoder":
             # definition of speaker set up
@@ -89,7 +89,7 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             # decoder signal
             ls_sig = spa.decoder.mad(HOAS.get_signals(), ls_setup, 3)
             # calc paramter from directional energies
-            TH, TS = calc_TS_TH_decoder(ls_sig, start_milliseconds, stop_milliseconds)
+            TH, TS = calc_TH_TS_decoder(ls_sig, start_milliseconds, stop_milliseconds)
         
         case "reference":
             # reference calculation method
@@ -121,9 +121,9 @@ def method_wrapper(method, path, start_milliseconds=15, stop_milliseconds=100, s
             for m in methods:
                print(m)
 
-            TS, TH = None, None
+            TH, TS = None, None
         
-    return TS, TH
+    return TH, TS
 
  
 
