@@ -37,28 +37,29 @@ def energy_from_beamforming(data: np.ndarray, N=2, pattern="hypercardioid", star
     start_sample = int(start_milliseconds / 1000 * samplerate)
     stop_sample = int(stop_milliseconds /1000 * samplerate)
 
-    data = data[start_sample:stop_sample, :]
+    x_nm = x_nm[:,start_sample:stop_sample]
 
     # defining steering directions of the beampattern
-    vec = np.array([[0,0,1],[1,0,0],[0,-1,0],[0,1,0],[-1,0,0],[0,0,-1]]) #top, front, left, right, back, bottom
+    #vec = np.array([[0,0,1],[1,0,0],[0,-1,0],[0,1,0],[-1,0,0],[0,0,-1]]) #top, front, left, right, back, bottom
 
     # conversion of vec: [x,y,z] to dir: [azi, zen]
-    dirs = spa.utils.vec2dir(vec)
+    #dirs = spa.utils.vec2dir(vec)
+    dirs = np.c_[[0,0],[0, np.pi/2],[np.pi/2,np.pi/2],[3*np.pi/2,np.pi/2],[np.pi, np.pi/2],[0,np.pi]]
 
     # getting beformer weights
     w_nm = spa.parsa.sh_beamformer_from_pattern(pattern, N,
-                                          dirs[:,0], dirs[:,1]) #azi, zen
+                                          dirs[0,:], dirs[1,:]) #azi, zen
     
     # beamforming
     y = spa.parsa.sh_beamform(w_nm, x_nm)
 
     # sum energys per direction
-    top_energy = np.sum(y[0,:])
-    front_energy = np.sum(y[1,:])
-    left_energy = np.sum(y[2,:])
-    right_energy = np.sum(y[3,:])
-    back_energy = np.sum(y[4,:])
-    bottom_energy = np.sum(y[5,:])
+    top_energy = y[0,:]
+    front_energy = y[1,:]
+    left_energy = y[2,:]
+    right_energy = y[3,:]
+    back_energy = y[4,:]
+    bottom_energy = y[5,:]
 
     energy = np.array([top_energy, front_energy, left_energy, right_energy, back_energy, bottom_energy])
     
